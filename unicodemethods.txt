@@ -1,0 +1,52 @@
+
+
+    //==========================================================
+    // Convert String to CharCodeString
+    // Convert TEXT (STRING) to UNICODE (STRING) to work with national alphabets
+    //==========================================================
+    public String String2Code(String PlainText) {
+        String chcstr="";
+        String charc="";
+        int i = 0; // Number of characters in String
+        char[] buf = new char[PlainText.length()]; // Array for PlainText string letters (for encryption)
+        int code=0; // Symbol code
+        buf = PlainText.toCharArray(); // The string to encrypt - into an array of characters
+
+        for(i = 0; i < PlainText.length(); i++) {
+            code = (int) buf[i]; // Character code from array
+            charc = String.format("\\u%04x", (int) buf[i]); // Convert Character CODE to TEXT (STRING)
+            chcstr = chcstr + charc; // Generate a character string of character codes of a string FOR encryption
+        }
+        Log.d(LOG_TAG, "== ==| FULL UNICODE TEXT |== ==" + chcstr);
+
+        return chcstr; //CharCodeString
+    }
+    //==========================================================
+
+
+    //==========================================================
+    // Convert CharCodeString to String
+    // Convert UNICODE (STRING) to text string (STRING) to work with national alphabets
+    //==========================================================
+    public String Code2String(String StringInText) {
+        String chcstr="";
+        String charc="";
+        String RestoreTXT=""; // Recovered from UNICODE STRING
+        int i = 0; // Number of characters in a string StringInText - string of character codes (6 bytes each)
+        int e = StringInText.length()/6; // Number of letters in original text string (before encoding) = StringInText/6
+        int in = 0;
+
+        char[] buf = new char[6]; // Array of 6 characters - one UNICODE
+        char[] buftxt = new char[e]; // CHAR Array = length of original string before encryption
+
+        for(i = 0; i < StringInText.length(); i = i+6) {
+            StringInText.getChars(i, i+6, buf, 0); //Write 6 characters i through i+6 to buf array starting from position 0
+            chcstr = StringInText.substring(i,i+6);
+            // Log.d(LOG_TAG, "== ==| ONE UNICODE |== ==" + chcstr);
+            charc = StringInText.substring(i+2,i+6); // Remove UNICODE prefix /u - Get character code
+            RestoreTXT = RestoreTXT + String.valueOf(Character.toChars(Integer.parseInt(charc, 16)));
+        }
+        Log.d(LOG_TAG, "== ==| RESTORED UNICODE to STRING |== == " + RestoreTXT); // UNICODE - in STRING, taking into account non-Latin letters
+        return RestoreTXT; //CharCodeString
+    }
+    //==========================================================
